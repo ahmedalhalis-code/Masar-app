@@ -11,5 +11,5 @@
 // const SUPABASE_URL = "https://abcdefgh.supabase.co";
 // const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 
-const SUPABASE_URL = "YOUR_SUPABASE_URL_HERE";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY_HERE";
+const SUPABASE_URL = "https://pybqaspysfzpzysstatn.supabase.co/rest/v1/";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5YnFhc3B5c2Z6cHp5c3N0YXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5NTk5MDMsImV4cCI6MjA5OTUzNTkwM30.YLCDk77R-ZoIw8vZ2BcsobtBfjIOk0nobuPJ1cjfyQI";
