@@ -1238,6 +1238,21 @@ async function bootstrap(){
 }
 
 bootstrap();
+
+// ============================================================
+// تعريف صريح على window — يضمن وصول أزرار onclick بالـHTML للدوال
+// حتى لو صار تعارض بترتيب تحميل السكربتات (خصوصاً على Safari)
+// ============================================================
+window.toggleAuthMode = toggleAuthMode;
+window.handleAuthSubmit = handleAuthSubmit;
+window.handleSignOut = handleSignOut;
+window.setExercise = setExercise;
+window.setToToday = setToToday;
+window.submitDay = submitDay;
+window.editDay = editDay;
+window.handleResetClick = handleResetClick;
+window.enableNotifications = enableNotifications;
+window.dismissNotifBanner = dismissNotifBanner;
 </script>
 
 </body>
