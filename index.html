@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -9,6 +10,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // مؤقت: يطلع أي خطأ جافاسكربت كرسالة واضحة فوق الشاشة، عشان تشخيص المشكلة من الجوال
+  window.addEventListener('error', function(e){
+    showDebugError('خطأ: ' + e.message + ' (سطر ' + e.lineno + ')');
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    showDebugError('خطأ Promise: ' + (e.reason && e.reason.message ? e.reason.message : e.reason));
+  });
+  function showDebugError(msg){
+    let box = document.getElementById('debugErrorBox');
+    if(!box){
+      box = document.createElement('div');
+      box.id = 'debugErrorBox';
+      box.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#a24632;color:#fff;padding:14px 16px;font-family:monospace;font-size:13px;z-index:99999;direction:ltr;text-align:left;white-space:pre-wrap;max-height:40vh;overflow:auto;';
+      document.body.appendChild(box);
+    }
+    const line = document.createElement('div');
+    line.style.marginBottom = '8px';
+    line.textContent = msg;
+    box.appendChild(line);
+  }
+</script>
 <style>
   :root{
     --ink:#1c2b2a;
@@ -36,567 +59,569 @@
   .mono{font-family:'Space Mono', monospace; direction:ltr; unicode-bidi:isolate;}
   .hidden{display:none !important;}
 
-  /* ===== Auth screen ===== */
-  #authScreen{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-  }
-  .auth-card{
-    max-width:400px;
-    width:100%;
-    background:#fff;
-    border:1px solid var(--rule);
-    border-radius:6px;
-    padding:36px 30px;
-    box-shadow:0 4px 24px rgba(0,0,0,0.06);
-  }
-  .auth-card h1{
-    font-size:30px;
-    color:var(--deep-teal);
-    margin:0 0 6px;
-    text-align:center;
-  }
-  .auth-card .sub{
-    text-align:center;
-    color:#6b7269;
-    font-size:14px;
-    margin:0 0 28px;
-    line-height:1.6;
-  }
-  .auth-field{margin-bottom:14px;}
-  .auth-field label{
-    display:block;
-    font-size:12.5px;
-    color:#5c6a63;
-    margin-bottom:6px;
-  }
-  .auth-field input{
-    width:100%;
-    padding:12px 14px;
-    border:1px solid var(--rule);
-    border-radius:4px;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-    font-size:15px;
-    background:var(--paper);
-    direction:ltr;
-    text-align:right;
-  }
-  .auth-field input:focus{outline:2px solid var(--deep-teal); outline-offset:1px;}
-  .auth-submit{
-    width:100%;
-    padding:13px;
-    margin-top:8px;
-    background:var(--deep-teal);
-    color:#fff;
-    border:none;
-    border-radius:4px;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-    font-weight:600;
-    font-size:15px;
-    cursor:pointer;
-  }
-  .auth-submit:hover{background:#1a3735;}
-  .auth-toggle{
-    text-align:center;
-    margin-top:18px;
-    font-size:13.5px;
-    color:#6b7269;
-  }
-  .auth-toggle a{color:var(--brass); cursor:pointer; text-decoration:underline;}
-  .auth-msg{
-    margin-top:14px;
-    padding:10px 12px;
-    border-radius:4px;
-    font-size:13px;
-    display:none;
-  }
-  .auth-msg.show{display:block;}
-  .auth-msg.error{background:#fbe4de; color:var(--bad);}
-  .auth-msg.info{background:#e3f0ea; color:var(--good);}
-  .auth-config-warning{
-    max-width:500px;
-    margin:20px auto;
-    padding:16px 20px;
-    background:#fbe4de;
-    border:1px solid var(--bad);
-    border-radius:6px;
-    color:#7a2e1c;
-    font-size:14px;
-    line-height:1.7;
-  }
+/* ===== Auth screen ===== */
+#authScreen{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:24px;
+}
+.auth-card{
+max-width:400px;
+width:100%;
+background:#fff;
+border:1px solid var(–rule);
+border-radius:6px;
+padding:36px 30px;
+box-shadow:0 4px 24px rgba(0,0,0,0.06);
+}
+.auth-card h1{
+font-size:30px;
+color:var(–deep-teal);
+margin:0 0 6px;
+text-align:center;
+}
+.auth-card .sub{
+text-align:center;
+color:#6b7269;
+font-size:14px;
+margin:0 0 28px;
+line-height:1.6;
+}
+.auth-field{margin-bottom:14px;}
+.auth-field label{
+display:block;
+font-size:12.5px;
+color:#5c6a63;
+margin-bottom:6px;
+}
+.auth-field input{
+width:100%;
+padding:12px 14px;
+border:1px solid var(–rule);
+border-radius:4px;
+font-family:‘IBM Plex Sans Arabic’, sans-serif;
+font-size:15px;
+background:var(–paper);
+direction:ltr;
+text-align:right;
+}
+.auth-field input:focus{outline:2px solid var(–deep-teal); outline-offset:1px;}
+.auth-submit{
+width:100%;
+padding:13px;
+margin-top:8px;
+background:var(–deep-teal);
+color:#fff;
+border:none;
+border-radius:4px;
+font-family:‘IBM Plex Sans Arabic’, sans-serif;
+font-weight:600;
+font-size:15px;
+cursor:pointer;
+}
+.auth-submit:hover{background:#1a3735;}
+.auth-toggle{
+text-align:center;
+margin-top:18px;
+font-size:13.5px;
+color:#6b7269;
+}
+.auth-toggle a{color:var(–brass); cursor:pointer; text-decoration:underline;}
+.auth-msg{
+margin-top:14px;
+padding:10px 12px;
+border-radius:4px;
+font-size:13px;
+display:none;
+}
+.auth-msg.show{display:block;}
+.auth-msg.error{background:#fbe4de; color:var(–bad);}
+.auth-msg.info{background:#e3f0ea; color:var(–good);}
+.auth-config-warning{
+max-width:500px;
+margin:20px auto;
+padding:16px 20px;
+background:#fbe4de;
+border:1px solid var(–bad);
+border-radius:6px;
+color:#7a2e1c;
+font-size:14px;
+line-height:1.7;
+}
 
-  /* ===== App shell ===== */
-  #appScreen{display:none;}
-  #appScreen.show{display:block;}
+/* ===== App shell ===== */
+#appScreen{display:none;}
+#appScreen.show{display:block;}
 
-  .top-bar{
-    max-width:720px;
-    margin:0 auto;
-    padding:16px 24px 0;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-  .user-chip{
-    font-size:12.5px;
-    color:#7a8078;
-    font-family:'Space Mono', monospace;
-    direction:ltr;
-  }
-  .signout-btn{
-    background:none;
-    border:1px solid var(--rule);
-    border-radius:4px;
-    padding:6px 14px;
-    font-size:12.5px;
-    color:#6b7269;
-    cursor:pointer;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-  }
-  .signout-btn:hover{background:var(--paper-deep);}
+.top-bar{
+max-width:720px;
+margin:0 auto;
+padding:16px 24px 0;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+.user-chip{
+font-size:12.5px;
+color:#7a8078;
+font-family:‘Space Mono’, monospace;
+direction:ltr;
+}
+.signout-btn{
+background:none;
+border:1px solid var(–rule);
+border-radius:4px;
+padding:6px 14px;
+font-size:12.5px;
+color:#6b7269;
+cursor:pointer;
+font-family:‘IBM Plex Sans Arabic’, sans-serif;
+}
+.signout-btn:hover{background:var(–paper-deep);}
 
-  header{
-    max-width:720px;
-    margin:0 auto;
-    padding:24px 24px 28px;
-    text-align:center;
-    position:relative;
-  }
-  .eyebrow{
-    font-family:'Space Mono', monospace;
-    font-size:11px;
-    letter-spacing:0.25em;
-    color:var(--brass);
-    text-transform:uppercase;
-    margin-bottom:10px;
-  }
-  h1{
-    font-size:clamp(32px, 6vw, 46px);
-    font-weight:700;
-    margin:0 0 8px;
-    color:var(--deep-teal);
-    letter-spacing:-0.01em;
-  }
-  .sub{
-    color:#5c6a63;
-    font-size:15px;
-    max-width:440px;
-    margin:0 auto;
-    line-height:1.6;
-  }
+header{
+max-width:720px;
+margin:0 auto;
+padding:24px 24px 28px;
+text-align:center;
+position:relative;
+}
+.eyebrow{
+font-family:‘Space Mono’, monospace;
+font-size:11px;
+letter-spacing:0.25em;
+color:var(–brass);
+text-transform:uppercase;
+margin-bottom:10px;
+}
+h1{
+font-size:clamp(32px, 6vw, 46px);
+font-weight:700;
+margin:0 0 8px;
+color:var(–deep-teal);
+letter-spacing:-0.01em;
+}
+.sub{
+color:#5c6a63;
+font-size:15px;
+max-width:440px;
+margin:0 auto;
+line-height:1.6;
+}
 
-  /* ===== Notification prompt ===== */
-  .notif-banner{
-    max-width:720px;
-    margin:0 auto 20px;
-    padding:0 24px;
-  }
-  .notif-card{
-    background:#fff8ea;
-    border:1px solid #e3cf9e;
-    border-radius:4px;
-    padding:14px 18px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    flex-wrap:wrap;
-    font-size:13.5px;
-  }
-  .notif-card button{
-    background:var(--brass-bright);
-    border:none;
-    border-radius:3px;
-    padding:8px 16px;
-    font-size:13px;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-    cursor:pointer;
-    white-space:nowrap;
-  }
-  .notif-card .dismiss{
-    background:none;
-    color:#9c927a;
-    text-decoration:underline;
-    padding:0;
-  }
+/* ===== Notification prompt ===== */
+.notif-banner{
+max-width:720px;
+margin:0 auto 20px;
+padding:0 24px;
+}
+.notif-card{
+background:#fff8ea;
+border:1px solid #e3cf9e;
+border-radius:4px;
+padding:14px 18px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+flex-wrap:wrap;
+font-size:13.5px;
+}
+.notif-card button{
+background:var(–brass-bright);
+border:none;
+border-radius:3px;
+padding:8px 16px;
+font-size:13px;
+font-family:‘IBM Plex Sans Arabic’, sans-serif;
+cursor:pointer;
+white-space:nowrap;
+}
+.notif-card .dismiss{
+background:none;
+color:#9c927a;
+text-decoration:underline;
+padding:0;
+}
 
-  /* ===== Voyage meter ===== */
-  .voyage{
-    max-width:720px;
-    margin:0 auto 32px;
-    padding:0 24px;
-  }
-  .voyage-card{
-    background:var(--paper-deep);
-    border:1px solid var(--rule);
-    border-radius:4px;
-    padding:28px 26px;
-    box-shadow: var(--shadow);
-    position:relative;
-    overflow:hidden;
-  }
-  .voyage-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:baseline;
-    margin-bottom:18px;
-    flex-wrap:wrap;
-    gap:10px;
-  }
-  .voyage-label{
-    font-family:'Space Mono', monospace;
-    font-size:11px;
-    letter-spacing:0.2em;
-    text-transform:uppercase;
-    color:var(--brass);
-  }
-  .voyage-pct{
-    font-family:'Space Mono', monospace;
-    font-size:34px;
-    font-weight:700;
-    color:var(--deep-teal);
-    direction:ltr;
-  }
-  .track{
-    position:relative;
-    height:10px;
-    background:#d9d0ba;
-    border-radius:6px;
-    overflow:visible;
-    margin:10px 0 6px;
-  }
-  .track-fill{
-    position:absolute;
-    inset:0;
-    width:0%;
-    background:linear-gradient(90deg, var(--brass) 0%, var(--good) 100%);
-    border-radius:6px;
-    transition:width 0.6s cubic-bezier(.4,0,.2,1);
-  }
-  .track-marker{
-    position:absolute;
-    top:50%;
-    width:14px;
-    height:14px;
-    background:var(--paper);
-    border:2.5px solid var(--deep-teal);
-    border-radius:50%;
-    transform:translate(50%,-50%);
-    transition:right 0.6s cubic-bezier(.4,0,.2,1);
-  }
-  .track-endpoints{
-    display:flex;
-    justify-content:space-between;
-    font-family:'Space Mono', monospace;
-    font-size:10.5px;
-    color:#8b8168;
-    margin-top:8px;
-  }
-  .voyage-stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:14px;
-    margin-top:22px;
-    padding-top:20px;
-    border-top:1px dashed var(--rule);
-  }
-  .vstat{text-align:center;}
-  .vstat .n{
-    font-family:'Space Mono', monospace;
-    font-size:22px;
-    font-weight:700;
-    color:var(--deep-teal);
-    direction:ltr;
-  }
-  .vstat .l{
-    font-size:12px;
-    color:#6b7269;
-    margin-top:4px;
-  }
+/* ===== Voyage meter ===== */
+.voyage{
+max-width:720px;
+margin:0 auto 32px;
+padding:0 24px;
+}
+.voyage-card{
+background:var(–paper-deep);
+border:1px solid var(–rule);
+border-radius:4px;
+padding:28px 26px;
+box-shadow: var(–shadow);
+position:relative;
+overflow:hidden;
+}
+.voyage-top{
+display:flex;
+justify-content:space-between;
+align-items:baseline;
+margin-bottom:18px;
+flex-wrap:wrap;
+gap:10px;
+}
+.voyage-label{
+font-family:‘Space Mono’, monospace;
+font-size:11px;
+letter-spacing:0.2em;
+text-transform:uppercase;
+color:var(–brass);
+}
+.voyage-pct{
+font-family:‘Space Mono’, monospace;
+font-size:34px;
+font-weight:700;
+color:var(–deep-teal);
+direction:ltr;
+}
+.track{
+position:relative;
+height:10px;
+background:#d9d0ba;
+border-radius:6px;
+overflow:visible;
+margin:10px 0 6px;
+}
+.track-fill{
+position:absolute;
+inset:0;
+width:0%;
+background:linear-gradient(90deg, var(–brass) 0%, var(–good) 100%);
+border-radius:6px;
+transition:width 0.6s cubic-bezier(.4,0,.2,1);
+}
+.track-marker{
+position:absolute;
+top:50%;
+width:14px;
+height:14px;
+background:var(–paper);
+border:2.5px solid var(–deep-teal);
+border-radius:50%;
+transform:translate(50%,-50%);
+transition:right 0.6s cubic-bezier(.4,0,.2,1);
+}
+.track-endpoints{
+display:flex;
+justify-content:space-between;
+font-family:‘Space Mono’, monospace;
+font-size:10.5px;
+color:#8b8168;
+margin-top:8px;
+}
+.voyage-stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:14px;
+margin-top:22px;
+padding-top:20px;
+border-top:1px dashed var(–rule);
+}
+.vstat{text-align:center;}
+.vstat .n{
+font-family:‘Space Mono’, monospace;
+font-size:22px;
+font-weight:700;
+color:var(–deep-teal);
+direction:ltr;
+}
+.vstat .l{
+font-size:12px;
+color:#6b7269;
+margin-top:4px;
+}
 
-  /* ===== Panels ===== */
-  .panel{
-    max-width:720px;
-    margin:0 auto 24px;
-    padding:0 24px;
-  }
-  .card{
-    background:#fff;
-    border:1px solid var(--rule);
-    border-radius:4px;
-    padding:22px 24px;
-    box-shadow:var(--shadow);
-    margin-bottom:16px;
-  }
-  .card h2{
-    font-size:15px;
-    margin:0 0 4px;
-    color:var(--deep-teal);
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-  .card h2 .num{
-    font-family:'Space Mono', monospace;
-    font-size:12px;
-    color:var(--brass);
-  }
-  .card p.hint{
-    font-size:13px;
-    color:#7a8078;
-    margin:0 0 16px;
-    line-height:1.5;
-  }
-  .field-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-  }
-  label{
-    display:block;
-    font-size:12.5px;
-    color:#5c6a63;
-    margin-bottom:6px;
-  }
-  input[type=number], input[type=date]{
-    width:100%;
-    padding:10px 12px;
-    border:1px solid var(--rule);
-    border-radius:3px;
-    font-family:'Space Mono', monospace;
-    font-size:15px;
-    background:var(--paper);
-    color:var(--ink);
-    direction:ltr;
-    text-align:right;
-  }
-  input:focus{outline:2px solid var(--deep-teal); outline-offset:1px;}
+/* ===== Panels ===== */
+.panel{
+max-width:720px;
+margin:0 auto 24px;
+padding:0 24px;
+}
+.card{
+background:#fff;
+border:1px solid var(–rule);
+border-radius:4px;
+padding:22px 24px;
+box-shadow:var(–shadow);
+margin-bottom:16px;
+}
+.card h2{
+font-size:15px;
+margin:0 0 4px;
+color:var(–deep-teal);
+display:flex;
+align-items:center;
+gap:8px;
+}
+.card h2 .num{
+font-family:‘Space Mono’, monospace;
+font-size:12px;
+color:var(–brass);
+}
+.card p.hint{
+font-size:13px;
+color:#7a8078;
+margin:0 0 16px;
+line-height:1.5;
+}
+.field-row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+label{
+display:block;
+font-size:12.5px;
+color:#5c6a63;
+margin-bottom:6px;
+}
+input[type=number], input[type=date]{
+width:100%;
+padding:10px 12px;
+border:1px solid var(–rule);
+border-radius:3px;
+font-family:‘Space Mono’, monospace;
+font-size:15px;
+background:var(–paper);
+color:var(–ink);
+direction:ltr;
+text-align:right;
+}
+input:focus{outline:2px solid var(–deep-teal); outline-offset:1px;}
 
-  /* ===== Daily check-in ===== */
-  .checkin-card{
-    background:var(--deep-teal);
-    color:#f2ede3;
-    border-radius:4px;
-    padding:24px 24px 22px;
-    margin-bottom:16px;
-  }
-  .checkin-card h2{color:#f2ede3;}
-  .checkin-card p.hint{color:#b9c9c4;}
+/* ===== Daily check-in ===== */
+.checkin-card{
+background:var(–deep-teal);
+color:#f2ede3;
+border-radius:4px;
+padding:24px 24px 22px;
+margin-bottom:16px;
+}
+.checkin-card h2{color:#f2ede3;}
+.checkin-card p.hint{color:#b9c9c4;}
 
-  .date-select-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:18px;
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:3px;
-    padding:12px 14px;
-  }
-  .date-select-row label{color:#d7e3df; font-size:13px; margin:0; white-space:nowrap;}
-  .date-select-row input[type=date]{
-    background:rgba(255,255,255,0.9);
-    border:none;
-    flex:1;
-  }
-  .today-btn{
-    background:rgba(255,255,255,0.12);
-    border:1px solid rgba(255,255,255,0.25);
-    color:#e8f0ec;
-    border-radius:3px;
-    padding:9px 12px;
-    font-size:12.5px;
-    cursor:pointer;
-    white-space:nowrap;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-  }
+.date-select-row{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:18px;
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.14);
+border-radius:3px;
+padding:12px 14px;
+}
+.date-select-row label{color:#d7e3df; font-size:13px; margin:0; white-space:nowrap;}
+.date-select-row input[type=date]{
+background:rgba(255,255,255,0.9);
+border:none;
+flex:1;
+}
+.today-btn{
+background:rgba(255,255,255,0.12);
+border:1px solid rgba(255,255,255,0.25);
+color:#e8f0ec;
+border-radius:3px;
+padding:9px 12px;
+font-size:12.5px;
+cursor:pointer;
+white-space:nowrap;
+font-family:‘IBM Plex Sans Arabic’, sans-serif;
+}
 
-  .qrow{
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:3px;
-    padding:16px 16px;
-    margin-bottom:12px;
-  }
-  .qrow label{color:#d7e3df; font-size:13.5px; margin-bottom:8px;}
-  .qrow input[type=number]{
-    background:rgba(255,255,255,0.9);
-    border:none;
-  }
-  .toggle-group{display:flex; gap:10px;}
-  .toggle-btn{
-    flex:1;
-    padding:12px;
-    border-radius:3px;
-    border:1px solid rgba(255,255,255,0.25);
-    background:rgba(255,255,255,0.05);
-    color:#e8f0ec;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-    font-size:14px;
-    cursor:pointer;
-    transition:all .15s;
-  }
-  .toggle-btn.active-yes{background:var(--good); border-color:var(--good); color:#fff;}
-  .toggle-btn.active-no{background:var(--bad); border-color:var(--bad); color:#fff;}
-  .limit-note{
-    font-family:'Space Mono', monospace;
-    font-size:11px;
-    color:#a9bdb7;
-    margin-top:6px;
-    direction:ltr;
-    text-align:right;
-  }
-  button.primary{
-    width:100%;
-    padding:14px;
-    margin-top:6px;
-    background:var(--brass-bright);
-    color:#241c0e;
-    border:none;
-    border-radius:3px;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-    font-weight:600;
-    font-size:15px;
-    cursor:pointer;
-    transition:transform .1s, background .15s;
-  }
-  button.primary:hover{background:#c79c62;}
-  button.primary:active{transform:scale(0.99);}
-  button.primary:disabled{opacity:0.5; cursor:not-allowed;}
+.qrow{
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.14);
+border-radius:3px;
+padding:16px 16px;
+margin-bottom:12px;
+}
+.qrow label{color:#d7e3df; font-size:13.5px; margin-bottom:8px;}
+.qrow input[type=number]{
+background:rgba(255,255,255,0.9);
+border:none;
+}
+.toggle-group{display:flex; gap:10px;}
+.toggle-btn{
+flex:1;
+padding:12px;
+border-radius:3px;
+border:1px solid rgba(255,255,255,0.25);
+background:rgba(255,255,255,0.05);
+color:#e8f0ec;
+font-family:‘IBM Plex Sans Arabic’, sans-serif;
+font-size:14px;
+cursor:pointer;
+transition:all .15s;
+}
+.toggle-btn.active-yes{background:var(–good); border-color:var(–good); color:#fff;}
+.toggle-btn.active-no{background:var(–bad); border-color:var(–bad); color:#fff;}
+.limit-note{
+font-family:‘Space Mono’, monospace;
+font-size:11px;
+color:#a9bdb7;
+margin-top:6px;
+direction:ltr;
+text-align:right;
+}
+button.primary{
+width:100%;
+padding:14px;
+margin-top:6px;
+background:var(–brass-bright);
+color:#241c0e;
+border:none;
+border-radius:3px;
+font-family:‘IBM Plex Sans Arabic’, sans-serif;
+font-weight:600;
+font-size:15px;
+cursor:pointer;
+transition:transform .1s, background .15s;
+}
+button.primary:hover{background:#c79c62;}
+button.primary:active{transform:scale(0.99);}
+button.primary:disabled{opacity:0.5; cursor:not-allowed;}
 
-  .day-result{
-    margin-top:14px;
-    padding:14px 16px;
-    border-radius:3px;
-    background:rgba(255,255,255,0.08);
-    font-size:14px;
-    line-height:1.7;
-    display:none;
-  }
-  .day-result.show{display:block;}
-  .day-result .score{
-    font-family:'Space Mono', monospace;
-    font-weight:700;
-    font-size:18px;
-  }
+.day-result{
+margin-top:14px;
+padding:14px 16px;
+border-radius:3px;
+background:rgba(255,255,255,0.08);
+font-size:14px;
+line-height:1.7;
+display:none;
+}
+.day-result.show{display:block;}
+.day-result .score{
+font-family:‘Space Mono’, monospace;
+font-weight:700;
+font-size:18px;
+}
 
-  /* ===== Log ===== */
-  .log-title{
-    font-family:'Space Mono', monospace;
-    font-size:11px;
-    letter-spacing:0.2em;
-    text-transform:uppercase;
-    color:var(--brass);
-    margin:32px 0 12px;
-    padding:0 24px;
-    max-width:720px;
-    margin-left:auto;
-    margin-right:auto;
-  }
-  .log-entry{
-    display:grid;
-    grid-template-columns:auto 1fr auto auto;
-    gap:14px;
-    align-items:center;
-    padding:12px 16px;
-    border-bottom:1px solid var(--rule);
-    font-size:13.5px;
-  }
-  .log-entry:first-child{border-top:1px solid var(--rule);}
-  .log-date{
-    font-family:'Space Mono', monospace;
-    font-size:12px;
-    color:#7a8078;
-    white-space:nowrap;
-  }
-  .log-marks{display:flex; gap:6px;}
-  .mark{
-    width:22px; height:22px;
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size:11px;
-    font-weight:700;
-  }
-  .mark.yes{background:var(--good); color:#fff;}
-  .mark.no{background:#e3ddcd; color:#9c927a;}
-  .log-score{
-    font-family:'Space Mono', monospace;
-    font-weight:700;
-    color:var(--deep-teal);
-    direction:ltr;
-  }
-  .log-edit{
-    background:none;
-    border:none;
-    color:#9c927a;
-    font-size:12px;
-    cursor:pointer;
-    text-decoration:underline;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-  }
-  .empty-log{
-    padding:24px;
-    text-align:center;
-    color:#8b9089;
-    font-size:14px;
-  }
+/* ===== Log ===== */
+.log-title{
+font-family:‘Space Mono’, monospace;
+font-size:11px;
+letter-spacing:0.2em;
+text-transform:uppercase;
+color:var(–brass);
+margin:32px 0 12px;
+padding:0 24px;
+max-width:720px;
+margin-left:auto;
+margin-right:auto;
+}
+.log-entry{
+display:grid;
+grid-template-columns:auto 1fr auto auto;
+gap:14px;
+align-items:center;
+padding:12px 16px;
+border-bottom:1px solid var(–rule);
+font-size:13.5px;
+}
+.log-entry:first-child{border-top:1px solid var(–rule);}
+.log-date{
+font-family:‘Space Mono’, monospace;
+font-size:12px;
+color:#7a8078;
+white-space:nowrap;
+}
+.log-marks{display:flex; gap:6px;}
+.mark{
+width:22px; height:22px;
+border-radius:50%;
+display:flex; align-items:center; justify-content:center;
+font-size:11px;
+font-weight:700;
+}
+.mark.yes{background:var(–good); color:#fff;}
+.mark.no{background:#e3ddcd; color:#9c927a;}
+.log-score{
+font-family:‘Space Mono’, monospace;
+font-weight:700;
+color:var(–deep-teal);
+direction:ltr;
+}
+.log-edit{
+background:none;
+border:none;
+color:#9c927a;
+font-size:12px;
+cursor:pointer;
+text-decoration:underline;
+font-family:‘IBM Plex Sans Arabic’, sans-serif;
+}
+.empty-log{
+padding:24px;
+text-align:center;
+color:#8b9089;
+font-size:14px;
+}
 
-  .danger-zone{
-    max-width:720px;
-    margin:36px auto 0;
-    padding:0 24px;
-  }
-  .danger-card{
-    border:1px dashed #c99;
-    border-radius:4px;
-    padding:16px 20px;
-    text-align:center;
-  }
-  .danger-card p{
-    font-size:12.5px;
-    color:#9c927a;
-    margin:0 0 10px;
-    line-height:1.6;
-  }
-  .reset-btn{
-    background:none;
-    border:1px solid var(--bad);
-    color:var(--bad);
-    border-radius:3px;
-    padding:8px 18px;
-    font-size:13px;
-    cursor:pointer;
-    font-family:'IBM Plex Sans Arabic', sans-serif;
-  }
-  .reset-btn:hover{background:#fbe4de;}
+.danger-zone{
+max-width:720px;
+margin:36px auto 0;
+padding:0 24px;
+}
+.danger-card{
+border:1px dashed #c99;
+border-radius:4px;
+padding:16px 20px;
+text-align:center;
+}
+.danger-card p{
+font-size:12.5px;
+color:#9c927a;
+margin:0 0 10px;
+line-height:1.6;
+}
+.reset-btn{
+background:none;
+border:1px solid var(–bad);
+color:var(–bad);
+border-radius:3px;
+padding:8px 18px;
+font-size:13px;
+cursor:pointer;
+font-family:‘IBM Plex Sans Arabic’, sans-serif;
+}
+.reset-btn:hover{background:#fbe4de;}
 
-  .syncing-note{
-    text-align:center;
-    font-size:12px;
-    color:#9c927a;
-    margin-top:6px;
-    font-family:'Space Mono', monospace;
-  }
+.syncing-note{
+text-align:center;
+font-size:12px;
+color:#9c927a;
+margin-top:6px;
+font-family:‘Space Mono’, monospace;
+}
 
-  @media (max-width:480px){
-    .field-row{grid-template-columns:1fr;}
-    .voyage-stats{grid-template-columns:1fr 1fr 1fr; gap:8px;}
-    .vstat .n{font-size:18px;}
-    .log-entry{grid-template-columns:auto 1fr auto; }
-    .log-edit{display:none;}
-  }
+@media (max-width:480px){
+.field-row{grid-template-columns:1fr;}
+.voyage-stats{grid-template-columns:1fr 1fr 1fr; gap:8px;}
+.vstat .n{font-size:18px;}
+.log-entry{grid-template-columns:auto 1fr auto; }
+.log-edit{display:none;}
+}
 
-  @media (prefers-reduced-motion: reduce){
-    .track-fill, .track-marker{transition:none;}
-  }
+@media (prefers-reduced-motion: reduce){
+.track-fill, .track-marker{transition:none;}
+}
 </style>
+
 </head>
 <body>
 
 <!-- ================= AUTH SCREEN ================= -->
+
 <div id="authScreen">
   <div id="configWarning" class="auth-config-warning hidden">
     <strong>الإعداد غير مكتمل.</strong> لازم تحط رابط ومفتاح Supabase في ملف <span class="mono">config.js</span> قبل ما يشتغل الموقع. راجع ملف التعليمات المرفق.
@@ -605,26 +630,30 @@
     <h1>المسار</h1>
     <p class="sub">سجل دخولك عشان يتزامن سجلك على كل أجهزتك.</p>
 
-    <div class="auth-field">
-      <label for="authEmail">البريد الإلكتروني</label>
-      <input type="email" id="authEmail" placeholder="you@example.com" autocomplete="email">
-    </div>
-    <div class="auth-field">
-      <label for="authPassword">كلمة المرور</label>
-      <input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password">
-    </div>
+```
+<div class="auth-field">
+  <label for="authEmail">البريد الإلكتروني</label>
+  <input type="email" id="authEmail" placeholder="you@example.com" autocomplete="email">
+</div>
+<div class="auth-field">
+  <label for="authPassword">كلمة المرور</label>
+  <input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password">
+</div>
 
-    <button class="auth-submit" id="authSubmitBtn" onclick="handleAuthSubmit()">تسجيل الدخول</button>
+<button class="auth-submit" id="authSubmitBtn" onclick="handleAuthSubmit()">تسجيل الدخول</button>
 
-    <div class="auth-toggle" id="authToggleText">
-      ما عندك حساب؟ <a onclick="toggleAuthMode()">أنشئ حساب جديد</a>
-    </div>
+<div class="auth-toggle" id="authToggleText">
+  ما عندك حساب؟ <a onclick="toggleAuthMode()">أنشئ حساب جديد</a>
+</div>
 
-    <div class="auth-msg" id="authMsg"></div>
+<div class="auth-msg" id="authMsg"></div>
+```
+
   </div>
 </div>
 
 <!-- ================= APP SCREEN ================= -->
+
 <div id="appScreen">
 
   <div class="top-bar">
@@ -695,41 +724,44 @@
       </div>
     </div>
 
-    <div class="checkin-card">
-      <h2><span class="num" style="color:#c9dbd4">٠٢</span> تسجيل يوم</h2>
-      <p class="hint">لو تجاوزت سقف السعرات أو المصروف، ما تاخد صفر مباشرة — النسبة تنزل تدريجياً حسب حجم التجاوز.</p>
+```
+<div class="checkin-card">
+  <h2><span class="num" style="color:#c9dbd4">٠٢</span> تسجيل يوم</h2>
+  <p class="hint">لو تجاوزت سقف السعرات أو المصروف، ما تاخد صفر مباشرة — النسبة تنزل تدريجياً حسب حجم التجاوز.</p>
 
-      <div class="date-select-row">
-        <label for="entryDate">اليوم:</label>
-        <input type="date" id="entryDate">
-        <button class="today-btn" onclick="setToToday()">اليوم الحالي</button>
-      </div>
+  <div class="date-select-row">
+    <label for="entryDate">اليوم:</label>
+    <input type="date" id="entryDate">
+    <button class="today-btn" onclick="setToToday()">اليوم الحالي</button>
+  </div>
 
-      <div class="qrow">
-        <label for="calInput">كم سعرة أكلت؟</label>
-        <input type="number" id="calInput" placeholder="مثلاً 1650" min="0" max="10000">
-        <div class="limit-note" id="calLimitNote"></div>
-      </div>
+  <div class="qrow">
+    <label for="calInput">كم سعرة أكلت؟</label>
+    <input type="number" id="calInput" placeholder="مثلاً 1650" min="0" max="10000">
+    <div class="limit-note" id="calLimitNote"></div>
+  </div>
 
-      <div class="qrow">
-        <label for="spendInput">كم صرفت؟ (ريال)</label>
-        <input type="number" id="spendInput" placeholder="مثلاً 60" min="0" max="100000">
-        <div class="limit-note" id="spendLimitNote"></div>
-      </div>
+  <div class="qrow">
+    <label for="spendInput">كم صرفت؟ (ريال)</label>
+    <input type="number" id="spendInput" placeholder="مثلاً 60" min="0" max="100000">
+    <div class="limit-note" id="spendLimitNote"></div>
+  </div>
 
-      <div class="qrow">
-        <label>تمرنت أو سويت نشاط رياضي؟</label>
-        <div class="toggle-group">
-          <button type="button" class="toggle-btn" id="exerciseYes" onclick="setExercise(true)">نعم، تمرنت</button>
-          <button type="button" class="toggle-btn" id="exerciseNo" onclick="setExercise(false)">لا</button>
-        </div>
-      </div>
-
-      <button class="primary" id="submitDay" onclick="submitDay()">حفظ هذا اليوم</button>
-      <div class="syncing-note" id="syncingNote"></div>
-
-      <div class="day-result" id="dayResult"></div>
+  <div class="qrow">
+    <label>تمرنت أو سويت نشاط رياضي؟</label>
+    <div class="toggle-group">
+      <button type="button" class="toggle-btn" id="exerciseYes" onclick="setExercise(true)">نعم، تمرنت</button>
+      <button type="button" class="toggle-btn" id="exerciseNo" onclick="setExercise(false)">لا</button>
     </div>
+  </div>
+
+  <button class="primary" id="submitDay" onclick="submitDay()">حفظ هذا اليوم</button>
+  <div class="syncing-note" id="syncingNote"></div>
+
+  <div class="day-result" id="dayResult"></div>
+</div>
+```
+
   </div>
 
   <div class="log-title">سجل الأيام</div>
@@ -750,6 +782,7 @@
 </div>
 
 <script src="config.js"></script>
+
 <script>
 // ============================================================
 // SUPABASE INIT
